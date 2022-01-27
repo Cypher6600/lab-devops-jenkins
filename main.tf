@@ -7,27 +7,27 @@ terraform {
   }
 }
 provider "aws" {
-  profile = "PowerUserAccess-529396670287"
+  profile = "bill66"
   region = "us-west-2"  
 }
-resource "aws_vpc" "bill_vpc" {
-  cidr_block = "192.168.100.0/24"
-  enable_dns_hostnames = true
+# resource "aws_vpc" "bill_vpc" {
+#   cidr_block = "192.168.100.0/24"
+#   enable_dns_hostnames = true
   
-  tags = {
-    Name = "bill_vpc"
-  }
-}
-resource "aws_subnet" "bill_subnet" {
-  vpc_id            = aws_vpc.bill_vpc.id
-  cidr_block        = "192.168.100.0/27"
-  availability_zone = "us-west-2a"
-  map_public_ip_on_launch = true
+#   tags = {
+#     Name = "bill_vpc"
+#   }
+# }
+# resource "aws_subnet" "bill_subnet" {
+#   vpc_id            = aws_vpc.bill_vpc.id
+#   cidr_block        = "192.168.100.0/27"
+#   availability_zone = "us-west-2a"
+#   map_public_ip_on_launch = true
   
-  tags = {
-    Name = "bill-subnet"
-  }
- }
+#   tags = {
+#     Name = "bill-subnet"
+#   }
+#  }
 # resource "aws_internet_gateway" "bill_gw" {
 #   vpc_id = aws_vpc.bill_vpc.id
 # }
@@ -91,10 +91,10 @@ resource "aws_instance" "bill_ec2" {
 #   network_interface_id = aws_network_interface.net1.id
 #    }
 }
-resource "aws_key_pair" "bill_key" {
-  key_name   = "bill-key"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCRJ+6PJIROASTo4DwA9P6IAdqe8bIE2CUvmKlWbao605hmUr+o/RRi04zlrgMG7uSyJIkm/Mv/f/ljoT/V6cBwJdQX8gzobHQSe++eb/V3GayMIgMmP+qYKu+2Oek32Kdl0ahdOljR08cty31NRuFHg83o0MMoo5qF9lulK0VFpKAg+h7moxI0ezlgnEzszxWad+JWrDsh7LZYVZcZwhX+V8zQhsJATg7Nxcu3IZCSdTLbv/YahAWjdEF/g7c7cEbMLqir7AeWQaQk7pNrm1cs0Nl3RYYB8NTb0deShMewB0ErpC5S3R0QGM71IK2L28xSFG9W/RFAC6NZVxSJLhgv"
-}
+# resource "aws_key_pair" "bill_key" {
+#   key_name   = "bill-key"
+#   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCRJ+6PJIROASTo4DwA9P6IAdqe8bIE2CUvmKlWbao605hmUr+o/RRi04zlrgMG7uSyJIkm/Mv/f/ljoT/V6cBwJdQX8gzobHQSe++eb/V3GayMIgMmP+qYKu+2Oek32Kdl0ahdOljR08cty31NRuFHg83o0MMoo5qF9lulK0VFpKAg+h7moxI0ezlgnEzszxWad+JWrDsh7LZYVZcZwhX+V8zQhsJATg7Nxcu3IZCSdTLbv/YahAWjdEF/g7c7cEbMLqir7AeWQaQk7pNrm1cs0Nl3RYYB8NTb0deShMewB0ErpC5S3R0QGM71IK2L28xSFG9W/RFAC6NZVxSJLhgv"
+# }
 resource "aws_cloudwatch_metric_alarm" "my_alarm" {
     alarm_name          = "my_alarm"
     comparison_operator = "LessThanOrEqualToThreshold"
