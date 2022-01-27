@@ -27,17 +27,17 @@ resource "aws_subnet" "bill_subnet" {
   tags = {
     Name = "bill-subnet"
   }
-}
-resource "aws_internet_gateway" "bill_gw" {
-  vpc_id = aws_vpc.bill_vpc.id
-}
-resource "aws_default_route_table" "bill_rt" {
-  vpc_id = aws_vpc.bill_vpc.id
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.bill_gw.id
-  }
-}
+# }
+# resource "aws_internet_gateway" "bill_gw" {
+#   vpc_id = aws_vpc.bill_vpc.id
+# }
+# resource "aws_default_route_table" "bill_rt" {
+#   vpc_id = aws_vpc.bill_vpc.id
+#   route {
+#     cidr_block = "0.0.0.0/0"
+#     gateway_id = aws_internet_gateway.bill_gw.id
+#   }
+# }
 # resource "aws_network_interface" "net1" {
 #   subnet_id   = aws_subnet.my_subnet.id
 #   private_ips = ["192.168.100.100"]
@@ -46,10 +46,10 @@ resource "aws_default_route_table" "bill_rt" {
 #       Name = "bill-network"
 #   }
 # }
-resource "aws_route_table_association" "public_subnet_rta" {
-  subnet_id      =  aws_subnet.bill_subnet.id
-  route_table_id = aws_route_table.bill_rt.id
-}
+# resource "aws_route_table_association" "public_subnet_rta" {
+#   subnet_id      =  aws_subnet.bill_subnet.id
+#   route_table_id = aws_default_route_table.bill_rt.id
+# }
 resource "aws_security_group" "allow_tls" {
 vpc_id = aws_vpc.bill_vpc.id
   name        = "Security_01"
