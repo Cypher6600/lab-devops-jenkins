@@ -105,7 +105,7 @@ resource "aws_cloudwatch_metric_alarm" "my_alarm" {
     statistic           = "Average"
     threshold           = 10
     alarm_description = "Stop the EC2 instance when CPU utilization stays below 10% on average for 12 periods of 5 minutes, i.e. 1 hour"
-    alarm_actions     = ["arn:aws:automate:${var.region}:ec2:stop"]
+    alarm_actions     = ["arn:aws:automate:us-west-2:ec2:stop"]
     dimensions = {
         InstanceId = "aws_instance.bill_ec2"
     }
