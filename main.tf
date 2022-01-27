@@ -50,42 +50,42 @@ provider "aws" {
 #   subnet_id      =  aws_subnet.bill_subnet.id
 #   route_table_id = aws_default_route_table.bill_rt.id
 # }
-resource "aws_security_group" "allow_tls" {
-vpc_id = aws_vpc.bill_vpc.id
-  name        = "Security_01"
-  description = "Allow SSH & HTTP inbound traffic"
-ingress {
-    description = "allowing HTTP"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-ingress {
-    description = "allowing SSH"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-tags = {
-    Name = "Security_01"
-  }
-}
-output "sec_op"{
- value = aws_security_group.allow_tls.name
-}
+# resource "aws_security_group" "allow_tls" {
+# vpc_id = aws_vpc.bill_vpc.id
+#   name        = "Security_01"
+#   description = "Allow SSH & HTTP inbound traffic"
+# ingress {
+#     description = "allowing HTTP"
+#     from_port   = 80
+#     to_port     = 80
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+# ingress {
+#     description = "allowing SSH"
+#     from_port   = 22
+#     to_port     = 22
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+# egress {
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+# tags = {
+#     Name = "Security_01"
+#   }
+# }
+# output "sec_op"{
+#  value = aws_security_group.allow_tls.name
+# }
 resource "aws_instance" "bill_ec2" {
   ami = "ami-066333d9c572b0680"
   instance_type = "t3.medium"
-  subnet_id = aws_subnet.bill_subnet.id
-# vpc_security_group_ids = aws_security_group.allow_tls.id 
+  subnet_id = "subnet-07204dc2ab63f3324"
+ vpc_security_group_ids = "sg-0de53a8cba25665b0"
 #   network_interface {
 #       device_index = 0
 #   network_interface_id = aws_network_interface.net1.id
