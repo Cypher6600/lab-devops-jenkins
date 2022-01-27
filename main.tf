@@ -85,7 +85,7 @@ resource "aws_instance" "bill_ec2" {
   ami = "ami-066333d9c572b0680"
   instance_type = "t3.medium"
   subnet_id = "subnet-07204dc2ab63f3324"
- vpc_security_group_ids = "sg-0de53a8cba25665b0"
+ vpc_security_group_ids = ["sg-0de53a8cba25665b0"]
 #   network_interface {
 #       device_index = 0
 #   network_interface_id = aws_network_interface.net1.id
