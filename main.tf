@@ -81,8 +81,7 @@ resource "aws_instance" "bill_ec2" {
   subnet_id = aws_subnet.bill_subnet.id
   iam_instance_profile = "jenkins"
   depends_on = [aws_internet_gateway.bill_gw]
-
-
+}
 resource "aws_cloudwatch_metric_alarm" "my_alarm" {
     alarm_name          = "my_alarm"
     comparison_operator = "LessThanOrEqualToThreshold"
