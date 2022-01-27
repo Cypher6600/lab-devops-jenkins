@@ -10,34 +10,34 @@ provider "aws" {
   profile = "PowerUserAccess-529396670287"
   region = "us-west-2"  
 }
-# resource "aws_vpc" "bill_vpc" {
-#   cidr_block = "192.168.100.0/24"
-#   enable_dns_hostnames = true
+resource "aws_vpc" "bill_vpc" {
+  cidr_block = "192.168.100.0/24"
+  enable_dns_hostnames = true
   
-#   tags = {
-#     Name = "bill_vpc"
-#   }
-# }
-# resource "aws_subnet" "bill_subnet" {
-#   vpc_id            = aws_vpc.bill_vpc.id
-#   cidr_block        = "192.168.100.0/27"
-#   availability_zone = "us-west-2a"
-#   map_public_ip_on_launch = true
+  tags = {
+    Name = "bill_vpc"
+  }
+}
+resource "aws_subnet" "bill_subnet" {
+  vpc_id            = aws_vpc.bill_vpc.id
+  cidr_block        = "192.168.100.0/27"
+  availability_zone = "us-west-2a"
+  map_public_ip_on_launch = true
   
-#   tags = {
-#     Name = "bill-subnet"
-#   }
-# }
-# resource "aws_internet_gateway" "bill_gw" {
-#   vpc_id = aws_vpc.bill_vpc.id
-# }
-# resource "aws_default_route_table" "bill_rt" {
-#   vpc_id = aws_vpc.bill_vpc.id
-#   route {
-#     cidr_block = "0.0.0.0/0"
-#     gateway_id = aws_internet_gateway.my_gateway.id
-#   }
-# }
+  tags = {
+    Name = "bill-subnet"
+  }
+}
+resource "aws_internet_gateway" "bill_gw" {
+  vpc_id = aws_vpc.bill_vpc.id
+}
+resource "aws_default_route_table" "bill_rt" {
+  vpc_id = aws_vpc.bill_vpc.id
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.bill_gw.id
+  }
+}
 # resource "aws_network_interface" "net1" {
 #   subnet_id   = aws_subnet.my_subnet.id
 #   private_ips = ["192.168.100.100"]
@@ -46,10 +46,10 @@ provider "aws" {
 #       Name = "bill-network"
 #   }
 # }
-# resource "aws_route_table_association" "public_subnet_rta" {
-#   subnet_id      =  aws_subnet.my_subnet.id
-#   route_table_id = aws_route_table.my_table.id
-# }
+resource "aws_route_table_association" "public_subnet_rta" {
+  subnet_id      =  aws_subnet.bill_subnet.id
+  route_table_id = aws_route_table.bill_rt.id
+}
 resource "aws_security_group" "allow_tls" {
 vpc_id = aws_vpc.bill_vpc.id
   name        = "Security_01"
