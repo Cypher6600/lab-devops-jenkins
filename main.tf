@@ -27,7 +27,7 @@ resource "aws_subnet" "bill_subnet" {
   tags = {
     Name = "bill-subnet"
   }
-# }
+ }
 # resource "aws_internet_gateway" "bill_gw" {
 #   vpc_id = aws_vpc.bill_vpc.id
 # }
