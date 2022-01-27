@@ -107,10 +107,10 @@ resource "aws_cloudwatch_metric_alarm" "my_alarm" {
     alarm_description = "Stop the EC2 instance when CPU utilization stays below 10% on average for 12 periods of 5 minutes, i.e. 1 hour"
     alarm_actions     = ["arn:aws:automate:${var.region}:ec2:stop"]
     dimensions = {
-        InstanceId = "${aws_instance.my_instance.id}"
+        InstanceId = "aws_instance.bill_ec2"
     }
 }
-resource "aws_iam_instance_profile" "test_profile" {
-  name = "jenkins"
-  role = "${aws_iam_role.test_role.name}"
-}
+# resource "aws_iam_instance_profile" "test_profile" {
+#   name = "jenkins"
+#   role = "aws_iam_role.test_role.jenkins"
+# }
