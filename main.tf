@@ -18,83 +18,71 @@ provider "aws" {
 #     Name = "bill_vpc"
 #   }
 # }
-# resource "aws_subnet" "bill_subnet" {
-#   vpc_id            = aws_vpc.bill_vpc.id
-#   cidr_block        = "192.168.100.0/27"
-#   availability_zone = "us-west-2a"
-#   map_public_ip_on_launch = true
+resource "aws_subnet" "bill_subnet" {
+  vpc_id            = "vpc-08283a2f3454394f5"
+  cidr_block        = "192.168.100.0/27"
+  availability_zone = "us-west-2a"
+  map_public_ip_on_launch = true
   
-#   tags = {
-#     Name = "bill-subnet"
-#   }
-#  }
-# resource "aws_internet_gateway" "bill_gw" {
-#   vpc_id = aws_vpc.bill_vpc.id
-# }
-# resource "aws_default_route_table" "bill_rt" {
-#   vpc_id = aws_vpc.bill_vpc.id
-#   route {
-#     cidr_block = "0.0.0.0/0"
-#     gateway_id = aws_internet_gateway.bill_gw.id
-#   }
-# }
-# resource "aws_network_interface" "net1" {
-#   subnet_id   = aws_subnet.my_subnet.id
-#   private_ips = ["192.168.100.100"]
-  
-#   tags = {
-#       Name = "bill-network"
-#   }
-# }
-# resource "aws_route_table_association" "public_subnet_rta" {
-#   subnet_id      =  aws_subnet.bill_subnet.id
-#   route_table_id = aws_default_route_table.bill_rt.id
-# }
-# resource "aws_security_group" "allow_tls" {
-# vpc_id = aws_vpc.bill_vpc.id
-#   name        = "Security_01"
-#   description = "Allow SSH & HTTP inbound traffic"
-# ingress {
-#     description = "allowing HTTP"
-#     from_port   = 80
-#     to_port     = 80
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-# ingress {
-#     description = "allowing SSH"
-#     from_port   = 22
-#     to_port     = 22
-#     protocol    = "tcp"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-# egress {
-#     from_port   = 0
-#     to_port     = 0
-#     protocol    = "-1"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-# tags = {
-#     Name = "Security_01"
-#   }
-# }
-# output "sec_op"{
-#  value = aws_security_group.allow_tls.name
-# }
+  tags = {
+    Name = "bill-subnet"
+  }
+  }
+resource "aws_internet_gateway" "bill_gw" {
+  vpc_id = "vpc-08283a2f3454394f5"
+}
+resource "aws_route_table" "bill_rt" {
+  vpc_id = "vpc-08283a2f3454394f5"
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.bill_gw.id
+  }
+}
+resource "aws_main_route_table_association" "main_rtb" {
+  vpc_id         = "vpc-08283a2f3454394f5"
+  route_table_id = aws_route_table.bill_rt.id
+}
+resource "aws_default_security_group" "default" {
+  vpc_id = "vpc-08283a2f3454394f5"
+  ingress = [
+    {
+      cidr_blocks      = ["0.0.0.0/0"]
+      description      = ""
+      from_port        = 0
+      ipv6_cidr_blocks = ["::/0"]
+      prefix_list_ids  = []
+      protocol         = "-1"
+      security_groups  = []
+      self             = false
+      to_port          = 0
+    },
+    {
+      cidr_blocks      = []
+      description      = ""
+      from_port        = 0
+      ipv6_cidr_blocks = []
+      prefix_list_ids  = []
+      protocol         = "-1"
+      security_groups  = []
+      self             = true
+      to_port          = 0
+    },
+  ]
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
 resource "aws_instance" "bill_ec2" {
   ami = "ami-066333d9c572b0680"
   instance_type = "t3.medium"
-  subnet_id = "subnet-07204dc2ab63f3324"
- vpc_security_group_ids = ["sg-0de53a8cba25665b0"]
-#   network_interface {
-#       device_index = 0
-#   network_interface_id = aws_network_interface.net1.id
-#    }
-}
-# resource "aws_key_pair" "bill_key" {
-#   key_name   = "bill-key"
-#   public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCRJ+6PJIROASTo4DwA9P6IAdqe8bIE2CUvmKlWbao605hmUr+o/RRi04zlrgMG7uSyJIkm/Mv/f/ljoT/V6cBwJdQX8gzobHQSe++eb/V3GayMIgMmP+qYKu+2Oek32Kdl0ahdOljR08cty31NRuFHg83o0MMoo5qF9lulK0VFpKAg+h7moxI0ezlgnEzszxWad+JWrDsh7LZYVZcZwhX+V8zQhsJATg7Nxcu3IZCSdTLbv/YahAWjdEF/g7c7cEbMLqir7AeWQaQk7pNrm1cs0Nl3RYYB8NTb0deShMewB0ErpC5S3R0QGM71IK2L28xSFG9W/RFAC6NZVxSJLhgv"
-# }
+  subnet_id = aws_subnet.bill_subnet.id
+  iam_instance_profile = "jenkins"
+  depends_on = [aws_internet_gateway.bill_gw]
+
+
 resource "aws_cloudwatch_metric_alarm" "my_alarm" {
     alarm_name          = "my_alarm"
     comparison_operator = "LessThanOrEqualToThreshold"
@@ -107,10 +95,6 @@ resource "aws_cloudwatch_metric_alarm" "my_alarm" {
     alarm_description = "Stop the EC2 instance when CPU utilization stays below 10% on average for 12 periods of 5 minutes, i.e. 1 hour"
     alarm_actions     = ["arn:aws:automate:us-west-2:ec2:stop"]
     dimensions = {
-        InstanceId = "aws_instance.bill_ec2"
+        InstanceId = aws_instance.bill_ec2.id
     }
 }
-# resource "aws_iam_instance_profile" "test_profile" {
-#   name = "jenkins"
-#   role = "aws_iam_role.test_role.jenkins"
-# }
